@@ -9,7 +9,7 @@ import {
 } from '@ant-design/pro-components';
 import { Modal } from 'antd';
 import React from 'react';
-import type { Income } from '../data';
+import type { Expenses } from '../data';
 
 export type FormValueType = {
     target?: string;
@@ -17,13 +17,13 @@ export type FormValueType = {
     type?: string;
     time?: string;
     frequency?: string;
-} & Partial<Income>;
+} & Partial<Expenses>;
 
 export type UpdateFormProps = {
     onCancel: (flag?: boolean, formVals?: FormValueType) => void;
     onSubmit: (values: FormValueType) => Promise<void>;
     updateModalVisible: boolean;
-    values: Partial<Income>;
+    values: Partial<Expenses>;
 };
 
 const UpdateForm: React.FC<UpdateFormProps> = (props) => {
@@ -55,8 +55,8 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
         >
             <StepsForm.StepForm
                 initialValues={{
-                    incomeNum: props.values.incomeNum,
-                    incomeUser: props.values.incomeUser,
+                    expensesNum: props.values.expensesNum,
+                    expensesUser: props.values.expensesUser,
                 }}
                 title="基本信息"
             >
@@ -69,7 +69,7 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
                         },
                     ]}
                     width="md"
-                    name="incomeNum"
+                    name="expensesNum"
                 />
 
                 <ProFormText
@@ -81,18 +81,18 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
                         },
                     ]}
                     width="md"
-                    name="incomeUser"
+                    name="expensesUser"
                 />
             </StepsForm.StepForm>
             <StepsForm.StepForm
                 initialValues={{
-                    incomeSort: props.values.incomeSort,
-                    incomeRemark: props.values.incomeRemark,
+                    expensesSort: props.values.expensesSort,
+                    expensesRemark: props.values.expensesRemark,
                 }}
                 title="配置规则属性"
             >
                 <ProFormSelect
-                    name="incomeSort"
+                    name="expensesSort"
                     label="类别"
                     valueEnum={{
                         人情: {text: '人情'},
@@ -113,17 +113,17 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
                 <ProFormText
                     label="备注"
                     width="md"
-                    name="incomeRemark"
+                    name="expensesRemark"
                 />
             </StepsForm.StepForm>
             <StepsForm.StepForm
                 initialValues={{
-                    incomeTime: props.values.incomeTime,
+                    expensesTime: props.values.expensesTime,
                 }}
                 title="设定调度周期"
             >
                 <ProFormDatePicker
-                    name="incomeTime"
+                    name="expensesTime"
                     label="日期"
                 />
             </StepsForm.StepForm>

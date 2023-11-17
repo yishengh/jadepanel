@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Button, Card, Col, Row } from 'antd';
-import { getIncomeCollection } from '@/pages/Bills/Income/service';
+import { getExpensesCollection } from '@/pages/Bills/Expenses/service';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faCoffee,
@@ -17,24 +17,23 @@ import {
   faArrowUp,
 } from '@fortawesome/free-solid-svg-icons'; // 导入所需的图标
 import * as echarts from 'echarts';
-import { useIntl } from '@@/exports';
 
-type incomePoint = {
-  incomeTime: string;
+type expensesPoint = {
+  expensesTime: string;
   num: number;
 };
 
-type IncomeDataList = {
-  incomeTotal: string;
-  incomeGroup: {
+type ExpensesDataList = {
+  expensesTotal: string;
+  expensesGroup: {
     name: string;
     value: number;
   }[];
-  incomeIncomeList: {
-    incomeTime: string;
+  expensesExpensesList: {
+    expensesTime: string;
     num: number;
   }[];
-  todayIncome: string | null;
+  todayExpenses: string | null;
 };
 
 // 将支出类别与图标关联起来的映射
@@ -52,18 +51,17 @@ const categoryIcons = {
   // 其他类别与相应的图标
 };
 
-const incomeChartPage = () => {
-  const intl = useIntl();
-  const [yearIncomeData, setYearIncomeData] = useState<
+const expensesChartPage = () => {
+  const [yearExpensesData, setYearExpensesData] = useState<
     | {
-        incomeTime: string;
+        expensesTime: string;
         num: number;
       }[]
     | null
   >(null);
-  const [monthIncomeData, setMonthIncomeData] = useState<
+  const [monthExpensesData, setMonthExpensesData] = useState<
     | {
-        incomeTime: string;
+        expensesTime: string;
         num: number;
       }[]
     | null
@@ -78,9 +76,9 @@ const incomeChartPage = () => {
   const [monthTopCategories, setMonthTopCategories] = useState<string[] | null>(null); // 较大收入类别
   const [monthTopCategoriesValue, setMonthTopCategoriesValue] = useState<string[] | null>(null); // 较大收入类别
 
-  const [annualIncome, setAnnualIncome] = useState<number | null>(0); // 今年收入
-  const [monthlyIncome, setMonthlyIncome] = useState<number | null>(0); // 本月收入
-  const [dailyIncome, setDailyIncome] = useState<number | null>(0);
+  const [annualExpenses, setAnnualExpenses] = useState<number | null>(0); // 今年收入
+  const [monthlyExpenses, setMonthlyExpenses] = useState<number | null>(0); // 本月收入
+  const [dailyExpenses, setDailyExpenses] = useState<number | null>(0);
   const [displayType, setDisplayType] = useState('year');
   const todayDate = new Date().toLocaleDateString('en-US', {
     year: 'numeric',
@@ -92,21 +90,18 @@ const incomeChartPage = () => {
     // 根据当前的displayType值切换到另一个值
     setDisplayType(displayType === 'year' ? 'month' : 'year');
   };
-  const renderIncomeChart = (data: { incomeTime: string; num: number }[] | null) => {
+  const renderExpensesChart = (data: { expensesTime: string; num: number }[] | null) => {
     if (data != null) {
-      const chartElement = document.getElementById('incomeChart');
+      const chartElement = document.getElementById('expensesChart');
 
       const myChart = echarts.init(chartElement);
 
-      const xAxisData = data.map((item) => item.incomeTime);
+      const xAxisData = data.map((item) => item.expensesTime);
       const yAxisData = data.map((item) => item.num);
 
       const option = {
         title: {
-          text: intl.formatMessage({
-            id: 'pages.income.incomeChart.chart',
-            defaultMessage: 'Annual income chart',
-          }),
+          text: '年收入图表',
           left: 'center', // Center align the title
           textStyle: {
             color: 'white', // Set title text color to white
@@ -123,7 +118,7 @@ const incomeChartPage = () => {
             const datay = params[0].data;
             const datax = params[0].axisValue;
             if (datay) {
-              return `Date：${datax}<br>Income：$${parseFloat(datay).toFixed(0)}`;
+              return `Date：${datax}<br>Expenses：$${parseFloat(datay).toFixed(0)}`;
             }
             return ''; // 处理 data.num 不存在或不是数值的情况
           },
@@ -139,7 +134,7 @@ const incomeChartPage = () => {
         },
         yAxis: {
           type: 'value',
-          name: 'Income',
+          name: 'Expenses',
           axisLabel: {
             formatter: '${value}',
           },
@@ -180,16 +175,13 @@ const incomeChartPage = () => {
     console.log('Pi图');
     console.log(data);
     console.log(categories);
-    if (document.getElementById('incomePieChart')) {
-      const chartElement = document.getElementById('incomePieChart');
+    if (document.getElementById('expensesPieChart')) {
+      const chartElement = document.getElementById('expensesPieChart');
       const myChart = echarts.init(chartElement);
 
       const option = {
         title: {
-          text: intl.formatMessage({
-            id: 'pages.income.incomeChart.classification',
-            defaultMessage: 'Annual income classification ratio',
-          }),
+          text: '年度收入分类比例',
           left: 'center',
           textStyle: {
             color: 'white',
@@ -212,10 +204,7 @@ const incomeChartPage = () => {
         },
         series: [
           {
-            name: intl.formatMessage({
-              id: 'pages.income.incomeChart.incomeType',
-              defaultMessage: 'Income Type',
-            }),
+            name: '收入分类',
             type: 'pie',
             radius: '55%',
             center: ['50%', '50%'],
@@ -263,19 +252,19 @@ const incomeChartPage = () => {
           .padStart(2, '0')}${yesterday.getDate().toString().padStart(2, '0')}`;
 
         const dataArray = await Promise.all([
-          getIncomeCollection({ date: currentYear.toString() }),
-          getIncomeCollection({ date: lastYear.toString() }),
-          getIncomeCollection({
+          getExpensesCollection({ date: currentYear.toString() }),
+          getExpensesCollection({ date: lastYear.toString() }),
+          getExpensesCollection({
             date: `${currentYear}${currentMonth.toString().padStart(2, '0')}`,
           }),
-          getIncomeCollection({ date: `${currentYear}${lastMonth.toString().padStart(2, '0')}` }),
+          getExpensesCollection({ date: `${currentYear}${lastMonth.toString().padStart(2, '0')}` }),
         ]);
-        const defaultIncomeData = {
-          incomeTotal: 0,
-          todayIncome: 0,
+        const defaultExpensesData = {
+          expensesTotal: 0,
+          todayExpenses: 0,
         };
         const sanitizedDataArray = dataArray.map((data) =>
-          data !== null ? data : { ...defaultIncomeData, incomeGroup: [], incomeIncomeList: [] },
+          data !== null ? data : { ...defaultExpensesData, expensesGroup: [], expensesExpensesList: [] },
         );
         if (sanitizedDataArray.every((data) => data !== null)) {
           // 计算天数
@@ -286,44 +275,44 @@ const incomeChartPage = () => {
           const monthTimeDifference = currentDate.getTime() - startOfMonth.getTime();
           // 将毫秒转换为天数
           const daysFrom1st = Math.floor(monthTimeDifference / (1000 * 60 * 60 * 24));
-          const thisYearIncomeValue = parseFloat(dataArray[0].incomeTotal);
-          const lastYearIncomeValue = parseFloat(dataArray[1].incomeTotal);
-          const thisMonthIncomeValue = parseFloat(dataArray[2].incomeTotal);
-          const lastMonthIncomeValue = parseFloat(dataArray[3].incomeTotal);
+          const thisYearExpensesValue = parseFloat(dataArray[0].expensesTotal);
+          const lastYearExpensesValue = parseFloat(dataArray[1].expensesTotal);
+          const thisMonthExpensesValue = parseFloat(dataArray[2].expensesTotal);
+          const lastMonthExpensesValue = parseFloat(dataArray[3].expensesTotal);
 
           setYearChangePercentage(
-            1 - thisYearIncomeValue / 365 / (lastYearIncomeValue / daysFromJan1st),
+            1 - thisYearExpensesValue / 365 / (lastYearExpensesValue / daysFromJan1st),
           );
           setMonthChangePercentage(
-            1 - thisMonthIncomeValue / 30 / (lastMonthIncomeValue / daysFrom1st),
+            1 - thisMonthExpensesValue / 30 / (lastMonthExpensesValue / daysFrom1st),
           );
 
-          setYearTopCategories(dataArray[0].incomeGroup.map((item: { name: any }) => item.name));
-          setMonthTopCategories(dataArray[2].incomeGroup.map((item: { name: any }) => item.name));
+          setYearTopCategories(dataArray[0].expensesGroup.map((item: { name: any }) => item.name));
+          setMonthTopCategories(dataArray[2].expensesGroup.map((item: { name: any }) => item.name));
 
           setYearTopCategoriesValue(
-            dataArray[0].incomeGroup.map((item: { value: any }) => item.value),
+            dataArray[0].expensesGroup.map((item: { value: any }) => item.value),
           );
           setMonthTopCategoriesValue(
-            dataArray[2].incomeGroup.map((item: { value: any }) => item.value),
+            dataArray[2].expensesGroup.map((item: { value: any }) => item.value),
           );
-          setAnnualIncome(thisYearIncomeValue);
-          setMonthlyIncome(thisMonthIncomeValue);
-          setDailyIncome(dataArray[0].todayIncome);
+          setAnnualExpenses(thisYearExpensesValue);
+          setMonthlyExpenses(thisMonthExpensesValue);
+          setDailyExpenses(dataArray[0].todayExpenses);
 
           // 处理 dataArray 中的数据
-          setYearIncomeData(dataArray[0].incomeIncomeList);
-          setMonthIncomeData(dataArray[2].incomeIncomeList);
+          setYearExpensesData(dataArray[0].expensesExpensesList);
+          setMonthExpensesData(dataArray[2].expensesExpensesList);
 
           console.log('1');
-          console.log(dataArray[0].incomeIncomeList);
-          if (document.getElementById('incomeChart')) {
-            renderIncomeChart(dataArray[0].incomeIncomeList);
+          console.log(dataArray[0].expensesExpensesList);
+          if (document.getElementById('expensesChart')) {
+            renderExpensesChart(dataArray[0].expensesExpensesList);
           }
-          if (document.getElementById('incomePieChart')) {
+          if (document.getElementById('expensesPieChart')) {
             renderPieChart({
-              data: dataArray[0].incomeGroup.map((item: { value: any }) => item.value),
-              categories: dataArray[0].incomeGroup.map((item: { name: any }) => item.name),
+              data: dataArray[0].expensesGroup.map((item: { value: any }) => item.value),
+              categories: dataArray[0].expensesGroup.map((item: { name: any }) => item.name),
             });
           }
         }
@@ -344,20 +333,11 @@ const incomeChartPage = () => {
   return (
     <div className="page-container">
       <Card
-        title={intl.formatMessage({
-          id: 'pages.income.incomeChart.hello',
-          defaultMessage: 'Hello! Yisheng, the following is your income:',
-        })}
+        title={`您好！Yisheng，下面是您的收入情况：`}
         extra={
-          <Button onClick={handleButtonClick}>
-            {intl.formatMessage({
-              id:
-                displayType === 'year'
-                  ? 'pages.income.incomeChart.switchMonthlyData'
-                  : 'pages.income.incomeChart.switchYearlyData',
-              defaultMessage: displayType === 'year' ? 'Switch Monthly Data' : 'Switch Yearly Data',
-            })}
-          </Button>
+          <Button onClick={handleButtonClick}>{`切换${
+            displayType === 'year' ? '月度' : '年度'
+          }数据`}</Button>
         }
       >
         <div className="card-content">
@@ -366,18 +346,7 @@ const incomeChartPage = () => {
             {yearChangePercentage !== null && monthChangePercentage !== null && (
               <Col span={8}>
                 <Card className="sub-card" style={{ height: '100%' }}>
-                  <h3>
-                    {intl.formatMessage({
-                      id:
-                        displayType === 'year'
-                          ? 'pages.income.incomeChart.averageDailyIncomeYearly'
-                          : 'pages.income.incomeChart.averageDailyIncomeMonthly',
-                      defaultMessage:
-                        displayType === 'year'
-                          ? 'Yearly Average Daily Income'
-                          : 'Monthly Average Daily Income',
-                    })}
-                  </h3>
+                  <h3>{displayType === 'year' ? '年平均每日收入' : '月平均每日收入'}</h3>
                   <p>
                     <span
                       style={{
@@ -413,12 +382,7 @@ const incomeChartPage = () => {
                     )}
                     %
                   </p>
-                  <h3>
-                    {intl.formatMessage({
-                      id: 'pages.income.incomeChart.statisticsTime',
-                      defaultMessage: '统计时间',
-                    })}
-                  </h3>
+                  <h3>统计时间</h3>
                   <p>{todayDate}</p>
                 </Card>
               </Col>
@@ -431,16 +395,7 @@ const incomeChartPage = () => {
               monthTopCategoriesValue !== null && (
                 <Col span={8}>
                   <Card className="sub-card" style={{ height: '100%' }}>
-                    <h3>
-                      {intl.formatMessage({
-                        id:
-                          displayType === 'year'
-                            ? 'pages.income.incomeChart.largerIncomeCategoryYearly'
-                            : 'pages.income.incomeChart.largerIncomeCategoryMonthly',
-                        defaultMessage:
-                          displayType === 'year' ? '较大收入类别（年）' : '较大收入类别（月）',
-                      })}
-                    </h3>
+                    <h3>{displayType === 'year' ? '较大收入类别（年）' : '较大收入类别（月）'}</h3>
                     <ul>
                       {displayType === 'year' ? (
                         yearTopCategories.length > 0 ? (
@@ -451,12 +406,7 @@ const incomeChartPage = () => {
                             </li>
                           ))
                         ) : (
-                          <li>
-                            {intl.formatMessage({
-                              id: 'pages.income.incomeChart.noIncome',
-                              defaultMessage: 'No Income',
-                            })}
-                          </li>
+                          <li>当前没有收入</li>
                         )
                       ) : monthTopCategories.length > 0 ? (
                         monthTopCategories.slice(0, 4).map((category, index) => (
@@ -466,12 +416,7 @@ const incomeChartPage = () => {
                           </li>
                         ))
                       ) : (
-                        <li>
-                          {intl.formatMessage({
-                            id: 'pages.income.incomeChart.noIncome',
-                            defaultMessage: 'No Income',
-                          })}
-                        </li>
+                        <li>当前没有收入</li>
                       )}
                     </ul>
                   </Card>
@@ -483,81 +428,41 @@ const incomeChartPage = () => {
               <Card className="sub-card" style={{ height: '100%' }}>
                 {displayType === 'year' ? (
                   <>
-                    {annualIncome !== null && (
+                    {annualExpenses !== null && (
                       <>
-                        <h3>
-                          {intl.formatMessage({
-                            id: 'pages.income.incomeChart.currentYearIncome',
-                            defaultMessage: 'Current Year Income',
-                          })}
-                        </h3>
-                        <p>{`$ ${annualIncome.toFixed(2)}`}</p>
+                        <h3>今年收入</h3>
+                        <p>{`$ ${annualExpenses.toFixed(2)}`}</p>
                       </>
                     )}
-                    {dailyIncome !== null && !isNaN(dailyIncome) ? (
+                    {dailyExpenses !== null && !isNaN(dailyExpenses) ? (
                       <>
-                        <h3>
-                          {intl.formatMessage({
-                            id: 'pages.income.incomeChart.todayIncome',
-                            defaultMessage: "Today's Income",
-                          })}
-                        </h3>
-                        <p>{`$ ${dailyIncome.toFixed(2)}`}</p>
+                        <h3>今天收入</h3>
+                        <p>{`$ ${dailyExpenses.toFixed(2)}`}</p>
                       </>
                     ) : (
                       <>
-                        <h3>
-                          {intl.formatMessage({
-                            id: 'pages.income.incomeChart.todayIncomeTitle',
-                            defaultMessage: "Today's Income",
-                          })}
-                        </h3>
-                        <p>
-                          {intl.formatMessage({
-                            id: 'pages.income.incomeChart.noTodayIncome',
-                            defaultMessage: 'No income data today',
-                          })}
-                        </p>
+                        <h3>今天收入</h3>
+                        <p>今天没有收入数据</p>
                       </>
                     )}
                   </>
                 ) : (
                   <>
-                    {monthlyIncome !== null && (
+                    {monthlyExpenses !== null && (
                       <>
-                        <h3>
-                          {intl.formatMessage({
-                            id: 'pages.income.incomeChart.currentMonthIncome',
-                            defaultMessage: 'Current Month Income',
-                          })}
-                        </h3>
-                        <p>{`$ ${monthlyIncome.toFixed(2)}`}</p>
+                        <h3>本月收入</h3>
+                        <p>{`$ ${monthlyExpenses.toFixed(2)}`}</p>
                       </>
                     )}
-                    {dailyIncome !== null && !isNaN(dailyIncome) ? (
+                    {dailyExpenses !== null && !isNaN(dailyExpenses) ? (
                       <>
-                        <h3>
-                          {intl.formatMessage({
-                            id: 'pages.income.incomeChart.todayIncomeTitle',
-                            defaultMessage: "Today's Income",
-                          })}
-                        </h3>
-                        <p>{`$ ${dailyIncome.toFixed(2)}`}</p>
+                        <h3>今天收入</h3>
+                        <p>{`$ ${dailyExpenses.toFixed(2)}`}</p>
                       </>
                     ) : (
                       <>
-                        <h3>
-                          {intl.formatMessage({
-                            id: 'pages.income.incomeChart.todayIncomeTitle',
-                            defaultMessage: "Today's Income",
-                          })}
-                        </h3>
-                        <p>
-                          {intl.formatMessage({
-                            id: 'pages.income.incomeChart.noTodayIncome',
-                            defaultMessage: 'No income data today',
-                          })}
-                        </p>
+                        <h3>今天收入</h3>
+                        <p>今天没有收入数据</p>
                       </>
                     )}
                   </>
@@ -569,14 +474,14 @@ const incomeChartPage = () => {
       </Card>
       <Row gutter={16}>
         <Col span={12}>
-          <div id="incomeChart" style={chartContainerStyle}></div>
+          <div id="expensesChart" style={chartContainerStyle}></div>
         </Col>
         <Col span={12}>
-          <div id="incomePieChart" style={chartContainerStyle}></div>
+          <div id="expensesPieChart" style={chartContainerStyle}></div>
         </Col>
       </Row>
     </div>
   );
 };
 
-export default incomeChartPage;
+export default expensesChartPage;

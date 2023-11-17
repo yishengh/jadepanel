@@ -149,10 +149,9 @@ export default defineConfig({
   //   },
   // ],
 
-
-
   mock: {
-    include: ['mock/**/*', 'src/pages/**/_mock.ts'],
+    // include: ['mock/**/*', 'src/pages/**/_mock.ts'],
+    include: ['mock/*.ts'],
   },
   mfsu: {
     strategy: 'normal',

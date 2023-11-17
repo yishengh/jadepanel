@@ -1,5 +1,7 @@
 import {
+  ProFormDatePicker,
   ProFormDateTimePicker,
+  ProFormDigit,
   ProFormRadio,
   ProFormSelect,
   ProFormText,
@@ -8,7 +10,7 @@ import {
 } from '@ant-design/pro-components';
 import { Modal } from 'antd';
 import React from 'react';
-import type { TableListItem } from '../data';
+import type { ClaimsAndDebt } from '../data';
 
 export type FormValueType = {
   target?: string;
@@ -16,13 +18,13 @@ export type FormValueType = {
   type?: string;
   time?: string;
   frequency?: string;
-} & Partial<TableListItem>;
+} & Partial<ClaimsAndDebt>;
 
 export type UpdateFormProps = {
   onCancel: (flag?: boolean, formVals?: FormValueType) => void;
   onSubmit: (values: FormValueType) => Promise<void>;
   updateModalVisible: boolean;
-  values: Partial<TableListItem>;
+  values: Partial<ClaimsAndDebt>;
 };
 
 const UpdateForm: React.FC<UpdateFormProps> = (props) => {
@@ -39,8 +41,8 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
               padding: '32px 40px 48px',
             }}
             destroyOnClose
-            title="规则配置"
-            visible={props.updateModalVisible}
+            title="修改收入"
+            open={props.updateModalVisible}
             footer={submitter}
             onCancel={() => {
               props.onCancel();
@@ -54,103 +56,76 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
     >
       <StepsForm.StepForm
         initialValues={{
-          name: props.values.name,
-          desc: props.values.desc,
+          cadNum: props.values.cadNum,
+          creditor: props.values.creditor,
+          obligor: props.values.obligor,
         }}
         title="基本信息"
       >
-        <ProFormText
-          name="name"
-          label="规则名称"
-          width="md"
+        <ProFormDigit
+          label="金额"
           rules={[
             {
               required: true,
-              message: '请输入规则名称！',
+              message: '金额为必填项',
             },
           ]}
+          width="md"
+          name="cadNum"
         />
-        <ProFormTextArea
-          name="desc"
-          width="md"
-          label="规则描述"
-          placeholder="请输入至少五个字符"
+
+        <ProFormText
+          label="creditor"
           rules={[
             {
               required: true,
-              message: '请输入至少五个字符的规则描述！',
-              min: 5,
+              message: 'creditor为必填项',
             },
           ]}
+          width="md"
+          name="creditor"
+        />
+
+        <ProFormText
+          label="obligor"
+          rules={[
+            {
+              required: true,
+              message: 'obligor为必填项',
+            },
+          ]}
+          width="md"
+          name="obligor"
         />
       </StepsForm.StepForm>
       <StepsForm.StepForm
         initialValues={{
-          target: '0',
-          template: '0',
+          cadType: props.values.cadType,
+          cadRemark: props.values.cadRemark,
         }}
         title="配置规则属性"
       >
         <ProFormSelect
-          name="target"
-          width="md"
-          label="监控对象"
+          name="cadType"
+          label="类别"
           valueEnum={{
-            0: '表一',
-            1: '表二',
+            借入: { text: '借入' },
+            借出: { text: '借出' },
           }}
-        />
-        <ProFormSelect
-          name="template"
+          placeholder="请选择一项类别"
           width="md"
-          label="规则模板"
-          valueEnum={{
-            0: '规则模板一',
-            1: '规则模板二',
-          }}
+          rules={[{ required: true, message: '请选择一项类别!' }]}
         />
-        <ProFormRadio.Group
-          name="type"
-          label="规则类型"
-          options={[
-            {
-              value: '0',
-              label: '强',
-            },
-            {
-              value: '1',
-              label: '弱',
-            },
-          ]}
-        />
+        <ProFormText label="备注" width="md" name="cadRemark" />
+        <ProFormText label="已偿还" width="md" name="cadRepay" />
       </StepsForm.StepForm>
       <StepsForm.StepForm
         initialValues={{
-          type: '1',
-          frequency: 'month',
+          cadTime: props.values.cadTime,
         }}
         title="设定调度周期"
       >
-        <ProFormDateTimePicker
-          name="time"
-          width="md"
-          label="开始时间"
-          rules={[
-            {
-              required: true,
-              message: '请选择开始时间！',
-            },
-          ]}
-        />
-        <ProFormSelect
-          name="frequency"
-          label="监控对象"
-          width="md"
-          valueEnum={{
-            month: '月',
-            week: '周',
-          }}
-        />
+        <ProFormDatePicker name="cadTime" label="日期" />
       </StepsForm.StepForm>
     </StepsForm>
   );

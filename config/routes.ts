@@ -28,23 +28,23 @@ export default [
     icon: 'smile',
     component: './Welcome',
   },
-  {
-    path: '/admin',
-    name: 'admin',
-    icon: 'crown',
-    access: 'canAdmin',
-    routes: [
-      {
-        path: '/admin',
-        redirect: '/admin/sub-page',
-      },
-      {
-        path: '/admin/sub-page',
-        name: 'sub-page',
-        component: './Admin',
-      },
-    ],
-  },
+  // {
+  //   path: '/admin',
+  //   name: 'admin',
+  //   icon: 'crown',
+  //   access: 'canAdmin',
+  //   routes: [
+  //     {
+  //       path: '/admin',
+  //       redirect: '/admin/sub-page',
+  //     },
+  //     {
+  //       path: '/admin/sub-page',
+  //       name: 'sub-page',
+  //       component: './Admin',
+  //     },
+  //   ],
+  // },
   // {
   //   name: 'list.table-list',
   //   icon: 'table',
@@ -60,8 +60,8 @@ export default [
 
   {
     path: '/income',
-    name: 'income',
-    icon: 'table',
+    name: 'Income',
+    icon: 'MoneyCollect',
     routes: [
       {
         path: '/income',
@@ -69,17 +69,115 @@ export default [
       },
       {
         path: '/income/chart',
-        name: 'income-chart',
+        name: 'Income Chart',
         component: './Bills/Income/subpage/chart',
       },
       {
         path: '/income/table',
-        name: 'income-table',
+        name: 'Income Table',
         component: './Bills/Income/subpage/table',
       },
     ],
   },
 
+  {
+    path: '/expenses',
+    name: 'Expenses',
+    icon: 'MoneyCollect',
+    routes: [
+      {
+        path: '/expenses',
+        redirect: '/expenses/chart',
+      },
+      {
+        path: '/expenses/chart',
+        name: 'Expenses Chart',
+        component: './Bills/Expenses/subpage/chart',
+      },
+      {
+        path: '/expenses/table',
+        name: 'Expenses Table',
+        component: './Bills/Expenses/subpage/table',
+      },
+    ],
+  },
+
+  {
+    path: '/cad',
+    name: 'Claims & Debt',
+    icon: 'MoneyCollect',
+    routes: [
+      {
+        path: '/cad',
+        redirect: '/cad/chart',
+      },
+      {
+        path: '/cad/chart',
+        name: 'CAD Chart',
+        component: './Equity/ClaimsAndDebt/subpage/chart',
+      },
+      {
+        path: '/cad/table',
+        name: 'Cad Table',
+        component: './Equity/ClaimsAndDebt/subpage/table',
+      },
+    ],
+  },
+
+  {
+    path: '/assets',
+    name: 'Assets',
+    icon: 'MoneyCollect',
+    routes: [
+      {
+        path: '/assets',
+        redirect: '/assets/chart',
+      },
+      {
+        path: '/assets/chart',
+        name: 'Assets Chart',
+        component: './Equity/Assets/subpage/chart',
+      },
+      {
+        path: '/assets/table',
+        name: 'Assets Table',
+        component: './Equity/Assets/subpage/table',
+      },
+    ],
+  },
+
+  {
+    path: '/stock',
+    name: 'Stock',
+    icon: 'MoneyCollect',
+    routes: [
+      {
+        path: '/stock',
+        redirect: '/stock/stock',
+      },
+      {
+        path: '/stock/stocks',
+        name: 'Stock List',
+        component: './Finance/Stock/subpage/stock',
+      },
+      {
+        path: '/stock/news',
+        name: 'Stock News',
+        component: './Finance/Stock/subpage/news',
+      },
+
+      {
+        path: '/stock/detail',
+        name: 'Stock Detail',
+        component: './Finance/Stock/subpage/detail',
+      },
+      {
+        path: '/stock/userStock',
+        name: 'User Stock',
+        component: './Finance/Stock/subpage/userStock',
+      },
+    ],
+  },
 
   {
     path: '/',

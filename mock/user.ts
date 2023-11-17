@@ -96,6 +96,7 @@ export default {
       },
     });
   },
+
   // GET POST 可省略
   'GET /api/users': [
     {
@@ -117,9 +118,10 @@ export default {
       address: 'Sidney No. 1 Lake Park',
     },
   ],
+
   'POST /api/login/account': async (req: Request, res: Response) => {
     const { password, username, type } = req.body;
-    await waitTime(2000);
+    await waitTime(1000);
     if (password === 'jade' && username === 'admin') {
       res.send({
         status: 'ok',
@@ -162,6 +164,7 @@ export default {
   'POST /api/register': (req: Request, res: Response) => {
     res.send({ status: 'ok', currentAuthority: 'user', success: true });
   },
+
   'GET /api/500': (req: Request, res: Response) => {
     res.status(500).send({
       timestamp: 1513932555104,

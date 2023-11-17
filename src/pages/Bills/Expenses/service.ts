@@ -2,22 +2,22 @@
 /* eslint-disable */
 import {request} from '@umijs/max';
 import {stringify} from "querystring";
-import {Income} from "@/pages/Bills/Income/data";
+import {Expenses} from "@/pages/Bills/Expenses/data";
 
 /** 查询收入记录 */
 
-export async function selectIncome(
+export async function selectExpenses(
   params: {
     limit: number;
   },
   options?: { [key: string]: any },
 ) {
   const response = await request<{
-    data: Income[];
+    data: Expenses[];
     /** 列表的内容总数 */
     total?: number;
     success?: boolean;
-  }>('/api/bills/userIncome/selectAll', {
+  }>('/api/bills/userExpenses/selectAll', {
     method: 'GET',
     params: {
       ...params,
@@ -28,7 +28,7 @@ export async function selectIncome(
   // Add unique keys to each item in the data array
   const dataWithKeys = response.data.map(item => ({
     ...item,
-    key: item.incomeId, // Assuming incomeId is a unique identifier
+    key: item.expensesId, // Assuming expensesId is a unique identifier
   }));
 
   return {
@@ -39,10 +39,10 @@ export async function selectIncome(
 
 
 /** 更新收入记录 */
-export async function updateIncome(params: any, options?: { [key: string]: any }) {
-  // console.log('updateIncome');
+export async function updateExpenses(params: any, options?: { [key: string]: any }) {
+  // console.log('updateExpenses');
   // console.log(params);
-  return request(`/api/bills/userIncome/updateIncome`, {
+  return request(`/api/bills/userExpenses/updateExpenses`, {
     method: "Post",
     headers: {
       'content-type': 'application/json'
@@ -53,10 +53,10 @@ export async function updateIncome(params: any, options?: { [key: string]: any }
 }
 
 /** 插入收入记录 */
-export async function insertIncome(params: any, options?: { [key: string]: any }) {
-  // console.log('insertIncome');
+export async function insertExpenses(params: any, options?: { [key: string]: any }) {
+  // console.log('insertExpenses');
   // console.log(params);
-  return request(`/api/bills/userIncome/insertIncome?${stringify(params)}`, {
+  return request(`/api/bills/userExpenses/insertExpenses?${stringify(params)}`, {
     method: "GET",
     headers: {
       'content-type': 'application/json'
@@ -66,10 +66,10 @@ export async function insertIncome(params: any, options?: { [key: string]: any }
 }
 
 /** 删除收入记录 */
-export async function deleteIncome(params: any, options?: { [key: string]: any }) {
-  // console.log('deleteIncome');
+export async function deleteExpenses(params: any, options?: { [key: string]: any }) {
+  // console.log('deleteExpenses');
   // console.log(params);
-  return request(`/api/bills/userIncome/deleteIncome?${stringify(params)}`, {
+  return request(`/api/bills/userExpenses/deleteExpenses?${stringify(params)}`, {
     method: "GET",
     ...(options || {}),
   });
@@ -78,18 +78,18 @@ export async function deleteIncome(params: any, options?: { [key: string]: any }
 /** 查询收入类型名 */
 export async function findTypeName(options?: { [key: string]: any }) {
   // console.log('findTypeName');
-  // console.log('/api/bills/userIncome/findType');
-  return request(`/api/bills/userIncome/findType`, {
+  // console.log('/api/bills/userExpenses/findType');
+  return request(`/api/bills/userExpenses/findType`, {
     method: "GET",
     ...(options || {}),
   });
 }
 
 /** 获取收入记录的统计信息 */
-export async function getIncomeCollection(params: any, options?: { [key: string]: any }) {
-  // console.log('getIncomeCollection' + stringify(params));
+export async function getExpensesCollection(params: any, options?: { [key: string]: any }) {
+  // console.log('getExpensesCollection' + stringify(params));
   // console.log(params);
-  return request(`/api/bills/userIncome/getIncomeCollection?${stringify(params)}`, {
+  return request(`/api/bills/userExpenses/getExpensesCollection?${stringify(params)}`, {
     method: "GET",
     ...(options || {}),
   });

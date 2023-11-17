@@ -49,7 +49,7 @@ export default {
   'menu.editor.flow': 'Flow Editor',
   'menu.editor.mind': 'Mind Editor',
   'menu.editor.koni': 'Koni Editor',
-  'menu.income': '英语收入页',
-  'menu.income.income-chart': '英语收入页1',
-  'menu.income.income-table': '英语收入页2',
+  'menu.income': 'Income',
+  'menu.income.income-chart': 'Income Chart',
+  'menu.income.income-table': 'Income Table',
 };
