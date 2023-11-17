@@ -13,7 +13,7 @@ export default {
   // 如果需要自定义本地开发服务器  请取消注释按需调整
   dev: {
     '/api/': {
-      target: 'http://localhost:10010/jade/',
+      target: 'http://173.249.206.87:10010/jade',
       changeOrigin: true,
       pathRewrite: {
         '/api': '',
