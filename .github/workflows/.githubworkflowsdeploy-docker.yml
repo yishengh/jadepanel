@@ -22,15 +22,11 @@ jobs:
       run: |
         npm install
 
-    - name: Build
-      run: |
-        npm run build
-
     - name: Build Docker image
       run: |
         docker build -t hyisheng/jadepanel-antdesign .
-        
-    - name: Expose port 8000
+
+    - name: Expose port 8000 and run Docker container
       run: |
         docker run -p 8000:8000 -d hyisheng/jadepanel-antdesign
 
